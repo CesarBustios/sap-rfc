@@ -18,3 +18,12 @@ services:
     #depends_on:
     #- mysql
     #command: ["python", "app/manage.py", "runserver", "0.0.0.0:8888"]
+  falcon:
+    container_name: container_falcon
+    build:
+      context: .
+      dockerfile: ./compose/falcon/Dockerfile
+    volumes:
+      - .:/project
+    ports:
+      - "80:80"

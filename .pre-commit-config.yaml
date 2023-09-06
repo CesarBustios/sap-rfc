@@ -1,0 +1,78 @@
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: requirements-txt-fixer
+      - id: check-merge-conflict
+      - id: fix-encoding-pragma
+        args: ["--remove"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+# black
+- repo: https://github.com/ambv/black
+  rev: 23.1.0
+  hooks:
+    - id: black
+      args: # arguments to configure black
+        - --line-length=88
+        - --include='\.pyi?$'
+
+        # these folders wont be formatted by black
+        - --exclude="""\.git |
+          \.__pycache__|
+          \.hg|
+          \.mypy_cache|
+          \.tox|
+          \.venv|
+          _build|
+          buck-out|
+          build|
+          \.idea|
+          dist"""
+
+# isort
+- repo: https://github.com/PyCQA/isort
+  rev: 5.12.0
+  hooks:
+    - id: isort
+      name: isort (python)
+      args: [--profile=black]
+      exclude: ^(alembic/)
+
+# autoflake
+- repo: https://github.com/pycqa/autoflake
+  rev: v2.1.1
+  hooks:
+    - id: autoflake
+      exclude: ^(app/__init__\.py|app/tests/|alembic/)
+      args:
+        - --in-place
+        - --remove-all-unused-imports
+        - --ignore-pass-after-docstring
+
+# flake8
+- repo: https://github.com/pycqa/flake8
+  rev: 6.0.0
+  hooks:
+    - id: flake8
+      args: # arguments to configure flake8
+        # making isort line length compatible with black
+        - "--max-line-length=88"
+        - "--max-complexity=18"
+        - "--select=B,C,E,F,W,T4,B9"
+
+        # these are errors that will be ignored by flake8
+        # check out their meaning here
+        # https://flake8.pycqa.org/en/latest/user/error-codes.html
+        - "--ignore=B903,E203,E266,E501,W503,F403,F401,E402,E712,F811"
+      additional_dependencies:
+        - flake8-bugbear
+        - flake8-comprehensions
+        - flake8-docstrings
+        - flake8-import-order
+        - pep8-naming
